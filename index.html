@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User 的個人部落格 - 留言版功能</title>
+    <style>
+        /* 保留之前的樣式並加入留言板樣式 */
+        body { font-family: 'Segoe UI', sans-serif; line-height: 1.6; margin: 0; background-color: #f4f4f9; color: #333; }
+        header { background-color: #2c3e50; color: white; padding: 2rem 0; text-align: center; }
+        .container { max-width: 800px; margin: 20px auto; padding: 0 20px; }
+        article { background: white; margin-bottom: 20px; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+        /* --- 留言板專屬樣式 --- */
+        .comment-section {
+            background: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-top: 40px;
+        }
+        .comment-section h3 {
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .comment-form input, .comment-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box; /* 確保寬度包含 padding */
+        }
+        .comment-form button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .comment-form button:hover {
+            background-color: #2980b9;
+        }
+        
+        /* 顯示留言的區域 */
+        #comment-list {
+            margin-top: 30px;
+        }
+        .comment-item {
+            border-bottom: 1px dashed #ccc;
+            padding: 15px 0;
+        }
+        .comment-item strong {
+            color: #2c3e50;
+            display: block;
+        }
+        .comment-item small {
+            color: #999;
+        }
+        .comment-item p {
+            margin: 5px 0 0;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>User 的生活日誌</h1>
+        <p>歡迎來到我的留言板測試版！</p>
+    </header>
+
+    <div class="container">
+        <!-- 文章內容 -->
+        <article>
+            <h2>新增功能：互動留言板</h2>
+            <p>User，我已經為你加入了留言板區塊。你可以在下方輸入名字和內容來測試效果！</p>
+        </article>
+
+        <!-- 留言板開始 -->
+        <div class="comment-section">
+            <h3>發表留言</h3>
+            <div class="comment-form">
+                <input type="text" id="username" placeholder="你的名字" required>
+                <textarea id="comment-text" rows="4" placeholder="想說些什麼嗎？" required></textarea>
+                <button onclick="addComment()">送出留言</button>
+            </div>
+
+            <div id="comment-list">
+                <!-- 留言會顯示在這裡 -->
+                <div class="comment-item">
+                    <strong>系統管理員</strong>
+                    <small>2023-10-27</small>
+                    <p>歡迎留言！這是一個範例留言。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript 處理留言邏輯
+        function addComment() {
+            const nameInput = document.getElementById('username');
+            const textInput = document.getElementById('comment-text');
+            const commentList = document.getElementById('comment-list');
+
+            if (nameInput.value.trim() === "" || textInput.value.trim() === "") {
+                alert("請填寫名字和內容喔！");
+                return;
+            }
+
+            // 獲取當前日期
+            const now = new Date();
+            const dateString = `\({now.getFullYear()}-\){now.getMonth() + 1}-${now.getDate()}`;
+
+            // 創建留言結構
+            const newComment = document.createElement('div');
+            newComment.className = 'comment-item';
+            newComment.innerHTML = `
+                <strong>${escapeHtml(nameInput.value)}</strong>
+                <small>${dateString}</small>
+                <p>${escapeHtml(textInput.value)}</p>
+            `;
+
+            // 將新留言插入到最前面
+            commentList.insertBefore(newComment, commentList.firstChild);
+
+            // 清空輸入框
+            nameInput.value = "";
+            textInput.value = "";
+        }
+
+        // 安全機制：防止 XSS 攻擊
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+
+</body>
+</html>
